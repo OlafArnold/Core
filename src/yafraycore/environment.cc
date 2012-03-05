@@ -543,6 +543,7 @@ imageFilm_t* renderEnvironment_t::createImageFilm(const paraMap_t &params, color
 		if(*name == "mitchell") type = imageFilm_t::MITCHELL;
 		else if(*name == "gauss") type = imageFilm_t::GAUSS;
 		else if(*name == "lanczos") type = imageFilm_t::LANCZOS;
+		else if(*name == "catmull") type = imageFilm_t::CATMULL;
 		else type = imageFilm_t::BOX;
 	}
 	else Y_WARN_ENV << "No AA filter defined defaulting to Box!" << yendl;
@@ -630,6 +631,7 @@ bool renderEnvironment_t::setupScene(scene_t &scene, const paraMap_t &params, co
 {
 	const std::string *name=0;
 	int AA_passes=1, AA_samples=1, AA_inc_samples=1, nthreads=1;
+	float AA_width=1.5f;
 	double AA_threshold=0.05;
 	bool z_chan = false;
 	bool drawParams = false;
@@ -689,6 +691,7 @@ bool renderEnvironment_t::setupScene(scene_t &scene, const paraMap_t &params, co
 	AA_inc_samples = AA_samples;
 	params.getParam("AA_inc_samples", AA_inc_samples);
 	params.getParam("AA_threshold", AA_threshold);
+	params.getParam("AA_pixelwidth", AA_width);
 	params.getParam("threads", nthreads); // number of threads, -1 = auto detection
 	params.getParam("z_channel", z_chan); // render z-buffer
 	params.getParam("drawParams", drawParams);
@@ -705,7 +708,19 @@ bool renderEnvironment_t::setupScene(scene_t &scene, const paraMap_t &params, co
 	if(z_chan) film->initDepthMap();
 	
 	params.getParam("filter_type", name); // AA filter type
-	aaSettings << "AA Settings (" << ((name)?*name:"box") << "): " << AA_passes << ";" << AA_samples << ";" << AA_inc_samples;
+
+	aaSettings << "AA Filter: ";
+
+	if(name)
+	{
+		if(*name == "mitchell") aaSettings << "Mitchell; ";
+		else if(*name == "gauss") aaSettings << "Gauss; ";
+		else if(*name == "lanczos") aaSettings << "Lanczcos2; ";
+		else if(*name == "catmull") aaSettings << "CatmullRom; ";
+		else aaSettings << "Box; ";
+	}
+
+	aaSettings << "Passes: " << AA_passes << "; Samples: " << AA_samples << "; Additional Samples: " << AA_inc_samples << "; Pixelwidth: " << AA_width;
 	
 	film->setAAParams(aaSettings.str());
 	if(custString) film->setCustomString(*custString);

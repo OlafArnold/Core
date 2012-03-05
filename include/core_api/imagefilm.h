@@ -59,7 +59,8 @@ class YAFRAYCORE_EXPORT imageFilm_t
 			BOX,
 			MITCHELL,
 			GAUSS,
-			LANCZOS
+			LANCZOS,
+			CATMULL
 		};
 		
 		/*! imageFilm_t Constructor */

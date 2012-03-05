@@ -115,6 +115,19 @@ float Lanczos2(float dx, float dy)
 	return 0.f;
 }
 
+//Catmull-Rom spline, Overhauser spline
+float CatmullRom(float dx, float dy)
+{
+	float x = 2.0f * fSqrt(dx*dx + dy*dy);
+
+	if (x < -2.0f) return 0.0f;
+	else if (x < -1.0f) return (0.5f * (4.0f + x * (8.0f + x * (5.0f + x))));
+	else if (x < 0.0f) return (0.5f * (2.0f + x * x * (-5.0f + x * -3.0f)));
+	else if (x < 1.0f) return (0.5f * (2.0f + x * x * (-5.0f + x * 3.0f)));
+	else if (x < 2.0f) return (0.5f * (4.0f + x * (-8.0f + x * (5.0f -x))));
+	return 0.0f;
+}
+
 imageFilm_t::imageFilm_t (int width, int height, int xstart, int ystart, colorOutput_t &out, float filterSize, filterType filt,
 						  renderEnvironment_t *e, bool showSamMask, int tSize, imageSpliter_t::tilesOrderType tOrder, bool pmA, bool drawParams):
 	flags(0), w(width), h(height), cx0(xstart), cy0(ystart), gamma(1.0), filterw(filterSize*0.5), output(&out),
@@ -141,6 +154,7 @@ imageFilm_t::imageFilm_t (int width, int height, int xstart, int ystart, colorOu
 		case MITCHELL: ffunc = Mitchell; filterw *= 2.6f; break;
 		case LANCZOS: ffunc = Lanczos2; break;
 		case GAUSS: ffunc = Gauss; filterw *= 2.f; break;
+		case CATMULL: ffunc = CatmullRom; filterw *=2.0f; break;
 		case BOX:
 		default:	ffunc = Box;
 	}
@@ -166,6 +180,7 @@ imageFilm_t::~imageFilm_t ()
 {
 	delete image;
 	if(depthMap) delete depthMap;
+	if(flags) delete flags;
 	if(densityImage) delete densityImage;
 	delete[] filterTable;
 	if(splitter) delete splitter;
