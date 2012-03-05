@@ -191,7 +191,7 @@ void textureMapper_t::evalDerivative(nodeStack_t &stack, const renderState_t &st
         if (tex->isNormalmap())
         {
             // needs some odd transforms, not sure about them, rather empirical than logically :/
-            vector3d_t tmpNorm = colorToVector(tex->getNoGammaColor(texpt));
+            /*vector3d_t tmpNorm = colorToVector(tex->getNoGammaColor(texpt));
 
             tmpNorm.y *= -1.0f;
 
@@ -199,7 +199,11 @@ void textureMapper_t::evalDerivative(nodeStack_t &stack, const renderState_t &st
             norm.x *= -1.0f;
             norm.y = tmpNorm * sp.dSdV;
 
-            norm.z = tmpNorm.z;
+            norm.z = tmpNorm.z;*/
+
+			norm = colorToVector(tex->getNoGammaColor(texpt));
+			du = norm * sp.dSdU;
+			dv = norm * sp.dSdV;
         }
         else
         {
@@ -224,8 +228,8 @@ void textureMapper_t::evalDerivative(nodeStack_t &stack, const renderState_t &st
         if(std::fabs(norm.z) > 1e-30f)
         {
             float NF = 1.0/norm.z * bumpStr; // normalizes z to 1, why?
-            du = norm.x*NF;
-            dv = norm.y*NF;
+            du = norm.x * NF;
+            dv = norm.y * NF;
         }
         else du = dv = 0.f;
     }
