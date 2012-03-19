@@ -52,59 +52,59 @@ void endElement(void *user_data, const xmlChar *name)
 	parser.endElement((const char *)name);
 }
 
-static void my_warning(void *user_data, const char *msg, ...) 
+static void my_warning(void *user_data, const char *msg, ...)
 {
-    va_list args;
+	va_list args;
 
-    va_start(args, msg);
-    printf(msg, args);
-    va_end(args);
+	va_start(args, msg);
+	printf(msg, args);
+	va_end(args);
 }
 
-static void my_error(void *user_data, const char *msg, ...) 
+static void my_error(void *user_data, const char *msg, ...)
 {
-    va_list args;
+	va_list args;
 
-    va_start(args, msg);
-    printf(msg, args);
-    va_end(args);
+	va_start(args, msg);
+	printf(msg, args);
+	va_end(args);
 }
 
-static void my_fatalError(void *user_data, const char *msg, ...) 
+static void my_fatalError(void *user_data, const char *msg, ...)
 {
-    va_list args;
+	va_list args;
 
-    va_start(args, msg);
-    printf(msg, args);
-    va_end(args);
+	va_start(args, msg);
+	printf(msg, args);
+	va_end(args);
 }
 
 static xmlSAXHandler my_handler =
 {
 	NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  NULL,
-  startDocument, //  startDocumentSAXFunc startDocument;
-  endDocument, //  endDocumentSAXFunc endDocument;
-  startElement, //  startElementSAXFunc startElement;
-  endElement, //  endElementSAXFunc endElement;
-  NULL,
-  NULL, //  charactersSAXFunc characters;
-  NULL,
-  NULL,
-  NULL,
-  my_warning,
-  my_error,
-  my_fatalError
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	NULL,
+	startDocument, //  startDocumentSAXFunc startDocument;
+	endDocument, //  endDocumentSAXFunc endDocument;
+	startElement, //  startElementSAXFunc startElement;
+	endElement, //  endElementSAXFunc endElement;
+	NULL,
+	NULL, //  charactersSAXFunc characters;
+	NULL,
+	NULL,
+	NULL,
+	my_warning,
+	my_error,
+	my_fatalError
 };
 #endif // HAVE_XML
 
@@ -240,14 +240,14 @@ void parseParam(const char **attrs, parameter_t &param)
 			case 'x': p.x = atof(attrs[n+1]); type = TYPE_POINT; break;
 			case 'y': p.y = atof(attrs[n+1]); type = TYPE_POINT; break;
 			case 'z': p.z = atof(attrs[n+1]); type = TYPE_POINT; break;
-			
+
 			case 'r': c.R = (CFLOAT)atof(attrs[n+1]); type = TYPE_COLOR; break;
 			case 'g': c.G = (CFLOAT)atof(attrs[n+1]); type = TYPE_COLOR; break;
 			case 'b': c.B = (CFLOAT)atof(attrs[n+1]); type = TYPE_COLOR; break;
 			case 'a': c.A = (CFLOAT)atof(attrs[n+1]); type = TYPE_COLOR; break;
 		}
 	}
-	
+
 	switch(type)
 	{
 		case TYPE_POINT: param = parameter_t(p); break;
@@ -474,7 +474,7 @@ void startEl_parammap(xmlParser_t &parser, const char *element, const char **att
 
 void endEl_parammap(xmlParser_t &p, const char *element)
 {
-	bool exit_state= (p.currLevel() == p.stateLevel());	
+	bool exit_state= (p.currLevel() == p.stateLevel());
 	if(exit_state)
 	{
 		std::string el(element);
@@ -510,7 +510,7 @@ void endEl_parammap(xmlParser_t &p, const char *element)
 			}
 			else Y_WARNING << "XMLParser: Unexpected end-tag of scene element!" << yendl;
 		}
-		
+
 		if(name) delete name;
 		p.popState(); p.params.clear(); p.eparams.clear();
 	}

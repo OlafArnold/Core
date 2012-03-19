@@ -11,32 +11,32 @@ inline bool triangle_t::intersect(const ray_t &ray, float *t, intersectData_t &d
 {
 	// Tomas Möller and Ben Trumbore ray intersection scheme
 	// Getting the barycentric coordinates of the hit point
-    // const point3d_t &a=mesh->points[pa], &b=mesh->points[pb], &c=mesh->points[pc];
+	// const point3d_t &a=mesh->points[pa], &b=mesh->points[pb], &c=mesh->points[pc];
 
-    point3d_t const& a = mesh->getVertex(pa);
-    point3d_t const& b = mesh->getVertex(pb);
-    point3d_t const& c = mesh->getVertex(pc);
-    
+	point3d_t const& a = mesh->getVertex(pa);
+	point3d_t const& b = mesh->getVertex(pb);
+	point3d_t const& c = mesh->getVertex(pc);
+
 	vector3d_t edge1, edge2, tvec, pvec, qvec;
 	float det, inv_det, u, v;
 	edge1 = b - a;
 	edge2 = c - a;
 	pvec = ray.dir ^ edge2;
 	det = edge1 * pvec;
-	
+
 	if(det == 0.0) return false;
-	
+
 	inv_det = 1.0 / det;
 	tvec = ray.from - a;
 	u = (tvec*pvec) * inv_det;
-	
+
 	if (u < 0.0 || u > 1.0) return false;
-	
+
 	qvec = tvec^edge1;
 	v = (ray.dir*qvec) * inv_det;
-	
+
 	if ((v<0.0) || ((u+v)>1.0) ) return false;
-	
+
 	*t = edge2 * qvec * inv_det;
 
 	data.b1 = u;
@@ -46,11 +46,11 @@ inline bool triangle_t::intersect(const ray_t &ray, float *t, intersectData_t &d
 
 inline bound_t triangle_t::getBound() const
 {
-    point3d_t const& a = mesh->getVertex(pa);
-    point3d_t const& b = mesh->getVertex(pb);
-    point3d_t const& c = mesh->getVertex(pc);
+	point3d_t const& a = mesh->getVertex(pa);
+	point3d_t const& b = mesh->getVertex(pb);
+	point3d_t const& c = mesh->getVertex(pc);
 
-    point3d_t l, h;
+	point3d_t l, h;
 	l.x = Y_MIN3(a.x, b.x, c.x);
 	l.y = Y_MIN3(a.y, b.y, c.y);
 	l.z = Y_MIN3(a.z, b.z, c.z);
@@ -64,9 +64,9 @@ inline bool triangle_t::intersectsBound(exBound_t &eb) const
 {
 	double tPoints[3][3];
 
-    point3d_t const& a = mesh->getVertex(pa);
-    point3d_t const& b = mesh->getVertex(pb);
-    point3d_t const& c = mesh->getVertex(pc);
+	point3d_t const& a = mesh->getVertex(pa);
+	point3d_t const& b = mesh->getVertex(pb);
+	point3d_t const& c = mesh->getVertex(pc);
 
 	for(int j=0; j<3; ++j)
 	{
@@ -80,9 +80,9 @@ inline bool triangle_t::intersectsBound(exBound_t &eb) const
 
 inline void triangle_t::recNormal()
 {
-    point3d_t const& a = mesh->getVertex(pa);
-    point3d_t const& b = mesh->getVertex(pb);
-    point3d_t const& c = mesh->getVertex(pc);
+	point3d_t const& a = mesh->getVertex(pa);
+	point3d_t const& b = mesh->getVertex(pb);
+	point3d_t const& c = mesh->getVertex(pc);
 
 	normal = ((b-a)^(c-a)).normalize();
 }
@@ -93,30 +93,30 @@ inline bool triangleInstance_t::intersect(const ray_t &ray, float *t, intersectD
 {
 	// Tomas Möller and Ben Trumbore ray intersection scheme
 	// Getting the barycentric coordinates of the hit point
-    point3d_t const& a = mesh->getVertex(mBase->pa);
-    point3d_t const& b = mesh->getVertex(mBase->pb);
-    point3d_t const& c = mesh->getVertex(mBase->pc);
-    
+	point3d_t const& a = mesh->getVertex(mBase->pa);
+	point3d_t const& b = mesh->getVertex(mBase->pb);
+	point3d_t const& c = mesh->getVertex(mBase->pc);
+
 	vector3d_t edge1, edge2, tvec, pvec, qvec;
 	float det, inv_det, u, v;
 	edge1 = b - a;
 	edge2 = c - a;
 	pvec = ray.dir ^ edge2;
 	det = edge1 * pvec;
-	
+
 	if(det == 0.0) return false;
-	
+
 	inv_det = 1.0 / det;
 	tvec = ray.from - a;
 	u = (tvec*pvec) * inv_det;
-	
+
 	if (u < 0.0 || u > 1.0) return false;
-	
+
 	qvec = tvec^edge1;
 	v = (ray.dir*qvec) * inv_det;
-	
+
 	if ((v<0.0) || ((u+v)>1.0) ) return false;
-	
+
 	*t = edge2 * qvec * inv_det;
 
 	data.b1 = u;
@@ -126,9 +126,9 @@ inline bool triangleInstance_t::intersect(const ray_t &ray, float *t, intersectD
 
 inline bound_t triangleInstance_t::getBound() const
 {
-    point3d_t const& a = mesh->getVertex(mBase->pa);
-    point3d_t const& b = mesh->getVertex(mBase->pb);
-    point3d_t const& c = mesh->getVertex(mBase->pc);
+	point3d_t const& a = mesh->getVertex(mBase->pa);
+	point3d_t const& b = mesh->getVertex(mBase->pb);
+	point3d_t const& c = mesh->getVertex(mBase->pc);
 
     point3d_t l, h;
 	l.x = Y_MIN3(a.x, b.x, c.x);
@@ -144,9 +144,9 @@ inline bool triangleInstance_t::intersectsBound(exBound_t &eb) const
 {
 	double tPoints[3][3];
 
-    point3d_t const& a = mesh->getVertex(mBase->pa);
-    point3d_t const& b = mesh->getVertex(mBase->pb);
-    point3d_t const& c = mesh->getVertex(mBase->pc);
+	point3d_t const& a = mesh->getVertex(mBase->pa);
+	point3d_t const& b = mesh->getVertex(mBase->pb);
+	point3d_t const& c = mesh->getVertex(mBase->pc);
 
 	for(int j=0; j<3; ++j)
 	{

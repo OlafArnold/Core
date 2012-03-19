@@ -16,7 +16,7 @@ __BEGIN_YAFRAY
 
 #ifdef WIN32
 
-void sharedlibrary_t::open(const std::string &lib) 
+void sharedlibrary_t::open(const string &lib)
 {
 	handle = LoadLibrary(lib.c_str());
 
@@ -32,9 +32,9 @@ void sharedlibrary_t::open(const std::string &lib)
 		refcount=new int(1);
 }
 
-void sharedlibrary_t::close() 
+void sharedlibrary_t::close()
 {
-	if (handle != NULL) 
+	if (handle != NULL)
 	{
 		FreeLibrary(handle);
 		handle = NULL;
@@ -42,16 +42,16 @@ void sharedlibrary_t::close()
 	}
 }
 
-void * sharedlibrary_t::getSymbol(const char *name) 
+void * sharedlibrary_t::getSymbol(const char *name)
 {
-	if (handle != NULL) 
+	if (handle != NULL)
 	{
 		void *func = (void*)GetProcAddress(handle, name); //added explicit cast to enable mingw32 compilation (DarkTide)
 		if (func == NULL)
 			cerr << "GetProcAddress error: " << GetLastError() << endl;
 		return func;
-	} 
-	else 
+	}
+	else
 	{
 		return NULL;
 	}
@@ -59,18 +59,18 @@ void * sharedlibrary_t::getSymbol(const char *name)
 
 #else
 
-void sharedlibrary_t::open(const std::string &lib) 
+void sharedlibrary_t::open(const string &lib)
 {
 	handle = dlopen(lib.c_str(),RTLD_NOW);
-	if (handle == NULL) 
+	if (handle == NULL)
 		cerr << "dlerror: " << dlerror() << endl;
 	else
 		refcount=new int(1);
 }
 
-void sharedlibrary_t::close() 
+void sharedlibrary_t::close()
 {
-	if (handle != NULL) 
+	if (handle != NULL)
 	{
 		dlclose(handle);
 		handle = NULL;
@@ -78,38 +78,38 @@ void sharedlibrary_t::close()
 	}
 }
 
-void * sharedlibrary_t::getSymbol(const char *name) 
+void * sharedlibrary_t::getSymbol(const char *name)
 {
-	if (handle != NULL) 
+	if (handle != NULL)
 	{
 		void *func = dlsym(handle, name);
-		if (func == NULL) 
+		if (func == NULL)
 			cerr<<"dlerror: "<<dlerror()<<endl;
 		return func;
-	} 
-	else 
+	}
+	else
 		return NULL;
 }
 
 #endif
 
-bool sharedlibrary_t::isOpen() 
+bool sharedlibrary_t::isOpen()
 {
 	return handle != NULL;
 }
 
-sharedlibrary_t::sharedlibrary_t() 
+sharedlibrary_t::sharedlibrary_t()
 {
   handle = NULL;
 }
 
-sharedlibrary_t::sharedlibrary_t(const std::string &library) 
+sharedlibrary_t::sharedlibrary_t(const string &library)
   : handle(NULL)
 {
   open(library);
 }
 
-sharedlibrary_t::sharedlibrary_t(const sharedlibrary_t &src) 
+sharedlibrary_t::sharedlibrary_t(const sharedlibrary_t &src)
 {
   handle = src.handle;
   if (isOpen())
@@ -119,7 +119,7 @@ sharedlibrary_t::sharedlibrary_t(const sharedlibrary_t &src)
 	}
 }
 
-sharedlibrary_t::~sharedlibrary_t() 
+sharedlibrary_t::~sharedlibrary_t()
 {
 	if(isOpen())
 	{
@@ -130,16 +130,16 @@ sharedlibrary_t::~sharedlibrary_t()
 }
 
 
-const std::list<std::string> & listDir(const std::string &dir)
+const list<string> & listDir(const string &dir)
 {
-	static std::list<std::string> lista;
+	static list<string> lista;
 	lista.clear();
 
 #if defined(WIN32)
-  std::string pattern = dir + "/*.dll";
+  string pattern = dir + "/*.dll";
 
   // replace all the "/" with "\"
-  for (int i = 0; i < (int)pattern.length(); ++i) 
+  for (int i = 0; i < (int)pattern.length(); ++i)
     if (pattern[i] == '/') pattern[i] = '\\';
 
   _finddata_t    FindData;
@@ -169,7 +169,7 @@ const std::list<std::string> & listDir(const std::string &dir)
 	if(directorio==NULL) return lista;
 
 	entrada=readdir(directorio);
-	while(entrada!=NULL) 
+	while(entrada!=NULL)
 	{
 		string full=dir+"/"+entrada->d_name;
 		stat(full.c_str(),&estado);

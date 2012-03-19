@@ -37,7 +37,7 @@ class xmlParser_t
 		void setParam(const std::string &name, parameter_t &param){ (*cparams)[name] = param; }
 		int currLevel() const{ return level; }
 		int stateLevel() const { return current ? current->level : -1; }
-		
+
 		renderEnvironment_t *env;
 		scene_t *scene;
 		paraMap_t params, &render;

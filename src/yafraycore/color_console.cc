@@ -17,7 +17,7 @@
  *      License along with this library; if not, write to the Free Software
  *      Foundation,Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
- 
+
 #include <yafray_config.h>
 
 #ifdef _WIN32
@@ -35,7 +35,7 @@ std::ostream &operator << (std::ostream& o, const setColor& c)
 	return (o << 'm');
 #else
 	static WORD origAttr = 0;
-	
+
 	if(origAttr == 0)
 	{
 		CONSOLE_SCREEN_BUFFER_INFO info;
@@ -44,14 +44,13 @@ std::ostream &operator << (std::ostream& o, const setColor& c)
 			origAttr = info.wAttributes;
 		}
 	}
-	
+
 	yColor newFgCol = (c.fgCol != Default) ?  (c.fgCol | ((WORD)c.intense << 3)) : (origAttr & 0x0F);
 	yColor newBgCol = (c.bgCol != Default) ? c.bgCol : (origAttr & 0xF0);
-	
+
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), newBgCol | newFgCol);
 #endif
 	return o;
 }
 
 __END_YAFRAY
-

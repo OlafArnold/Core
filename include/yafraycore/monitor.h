@@ -30,7 +30,7 @@ class YAFRAYCORE_EXPORT ConsoleProgressBar_t : public progressBar_t
 		virtual void update(int steps=1);
 		virtual void done();
 		virtual void setTag(const char* text) {};
-		
+
 	protected:
 		int width, totalBarLen;
 		int lastBarLen;

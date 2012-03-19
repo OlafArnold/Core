@@ -22,12 +22,12 @@ class YAFRAYCORE_EXPORT timer_t
 		bool stop(const std::string &name);
 		bool reset(const std::string &name);
 		double getTime(const std::string &name);
-		
+
 		static void splitTime(double t, double *secs, int *mins=0, int *hours=0, int *days=0);
-	
+
 	protected:
 		bool includes(const std::string &label)const;
-		
+
 		struct tdata_t
 		{
 			tdata_t():started(false), stopped(false) {};

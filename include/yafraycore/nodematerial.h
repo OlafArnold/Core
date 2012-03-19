@@ -32,7 +32,7 @@ class YAFRAYCORE_EXPORT nodeMaterial_t: public material_t
 		/*! filter out nodes with specific properties */
 		void filterNodes(const std::vector<shaderNode_t *> &input, std::vector<shaderNode_t *> &output, int flags);
 		virtual ~nodeMaterial_t();
-		
+
 		std::vector<shaderNode_t *> allNodes, allSorted, allViewdep, allViewindep, bumpNodes;
 		std::map<std::string,shaderNode_t *> shader_table;
 		size_t reqNodeMem;

@@ -26,4 +26,3 @@ __BEGIN_YAFRAY
 OutputLevel yafout = OutputLevel();
 
 __END_YAFRAY
-

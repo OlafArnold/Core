@@ -57,18 +57,18 @@ void spDifferentials_t::refractedRay(const diffRay_t &in, diffRay_t &out, PFLOAT
 	out.xfrom = sp.P + dPdx;
 	out.yfrom = sp.P + dPdy;
 	//if (Dot(wo, n) < 0) eta = 1.f / eta;
-	
+
 	//Normal dndx = bsdf->dgShading.dndu * bsdf->dgShading.dudx + bsdf->dgShading.dndv * bsdf->dgShading.dvdx;
 	//Normal dndy = bsdf->dgShading.dndu * bsdf->dgShading.dudy + bsdf->dgShading.dndv * bsdf->dgShading.dvdy;
-	
+
 	vector3d_t dwodx = in.dir - in.xdir, dwody = in.dir - in.ydir;
 	PFLOAT dDNdx = (dwodx * sp.N); // + Dot(wo, dndx);
 	PFLOAT dDNdy = (dwody * sp.N); // + Dot(wo, dndy);
-	
+
 //	PFLOAT mu = IOR * (in.dir * sp.N) - (out.dir * sp.N);
 	PFLOAT dmudx = (IOR - (IOR*IOR*(in.dir * sp.N))/(out.dir * sp.N)) * dDNdx;
 	PFLOAT dmudy = (IOR - (IOR*IOR*(in.dir * sp.N))/(out.dir * sp.N)) * dDNdy;
-	
+
 	out.xdir = out.dir + IOR * dwodx - (/* mu * dndx + */ dmudx * sp.N);
 	out.ydir = out.dir + IOR * dwody - (/* mu * dndy + */ dmudy * sp.N);
 }

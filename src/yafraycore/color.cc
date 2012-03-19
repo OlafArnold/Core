@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * 			color.cc: Color type and operators implementation 
+ * 			color.cc: Color type and operators implementation
  *      This is part of the yafray package
  *      Copyright (C) 2002  Alejandro Conty Estévez
  *
@@ -17,7 +17,7 @@
  *      You should have received a copy of the GNU Lesser General Public
  *      License along with this library; if not, write to the Free Software
  *      Foundation,Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *      
+ *
  */
 #include <core_api/color.h>
 using namespace std;
@@ -39,7 +39,7 @@ void operator << (unsigned char *data,const color_t &c)
 //	data[2]=(char) (((c.B<(CFLOAT)0) ? 0 : ((c.B>(CFLOAT)1) ? 255 : (((CFLOAT)255)*c.B) )) );
 	data[0]= (c.R<0.f) ? 0 : ((c.R>=1.f) ? 255 : (unsigned char)(255.f*c.R) );
 	data[1]= (c.G<0.f) ? 0 : ((c.G>=1.f) ? 255 : (unsigned char)(255.f*c.G) );
-	data[2]= (c.B<0.f) ? 0 : ((c.B>=1.f) ? 255 : (unsigned char)(255.f*c.B) ); 
+	data[2]= (c.B<0.f) ? 0 : ((c.B>=1.f) ? 255 : (unsigned char)(255.f*c.B) );
 }
 
 void operator >> (unsigned char *data,colorA_t &c)
@@ -60,7 +60,7 @@ void operator << (unsigned char *data,const colorA_t &c)
 	data[0]= (c.R<0.f) ? 0 : ((c.R>=1.f) ? 255 : (unsigned char)(255.f*c.R) );
 	data[1]= (c.G<0.f) ? 0 : ((c.G>=1.f) ? 255 : (unsigned char)(255.f*c.G) );
 	data[2]= (c.B<0.f) ? 0 : ((c.B>=1.f) ? 255 : (unsigned char)(255.f*c.B) );
-	data[3]= (c.A<0.f) ? 0 : ((c.A>=1.f) ? 255 : (unsigned char)(255.f*c.A) ); 
+	data[3]= (c.A<0.f) ? 0 : ((c.A>=1.f) ? 255 : (unsigned char)(255.f*c.A) );
 }
 
 void operator >> (float *data,color_t &c)
@@ -97,7 +97,7 @@ void operator << (float *data,const colorA_t &c)
 
 ostream & operator << (ostream & out,const color_t c)
 {
-	out<<"["<<c.R<<" "<<c.G<<" "<<c.B<<"]";
+	out << "[" << c.R << " " << c.G << " " << c.B << "]";
 	return out;
 }
 

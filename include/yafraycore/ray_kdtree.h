@@ -53,8 +53,8 @@ public:
 	int 	nPrimitives() const { return flags >> 2; }
 	bool 	IsLeaf() const { return (flags & 3) == 3; }
 	u_int32	getRightChild() const { return (flags >> 2); }
-	void 	setRightChild(u_int32 i) { flags = (flags&3) | (i << 2); }	
-	
+	void 	setRightChild(u_int32 i) { flags = (flags&3) | (i << 2); }
+
 	union
 	{
 		PFLOAT 			division;		//!< interior: division plane position
@@ -96,7 +96,7 @@ private:
 	int buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums,
 		u_int32 *leftPrims, u_int32 *rightPrims, boundEdge *edges[3],
 		u_int32 rightMemSize, int depth, int badRefines );
-	
+
 	float 		costRatio; 	//!< node traversal cost divided by primitive intersection cost
 	float 		eBonus; 	//!< empty bonus
 	u_int32 	nextFreeNode, allocatedNodesCount, totalPrims;
@@ -105,13 +105,13 @@ private:
 	bound_t 	treeBound; 	//!< overall space the tree encloses
 	MemoryArena primsArena;
 	rkdTreeNode<T> 	*nodes;
-	
+
 	// those are temporary actually, to keep argument counts bearable
 	const T **prims;
 	bound_t *allBounds;
 	int *clip; // indicate clip plane(s) for current level
 	char *cdata; // clipping data...
-	
+
 	// some statistics:
 	int depthLimitReached, NumBadSplits;
 };

@@ -8,7 +8,7 @@
 
 namespace yafthreads {
 
-mutex_t::mutex_t() 
+mutex_t::mutex_t()
 {
 #if HAVE_PTHREAD
 	int error=pthread_mutex_init(&m, NULL);
@@ -24,7 +24,7 @@ mutex_t::mutex_t()
 #endif
 }
 
-void mutex_t::lock() 
+void mutex_t::lock()
 {
 #if HAVE_PTHREAD
 	if(pthread_mutex_lock(&m))
@@ -36,7 +36,7 @@ void mutex_t::lock()
 #endif
 }
 
-void mutex_t::unlock() 
+void mutex_t::unlock()
 {
 #if HAVE_PTHREAD
 	if(pthread_mutex_unlock(&m))
@@ -48,7 +48,7 @@ void mutex_t::unlock()
 #endif
 }
 
-mutex_t::~mutex_t() 
+mutex_t::~mutex_t()
 {
 #if HAVE_PTHREAD
 	pthread_mutex_destroy(&m);
@@ -58,7 +58,7 @@ mutex_t::~mutex_t()
 }
 
 /* read-shared write-exclusive lock */
-rwlock_t::rwlock_t() 
+rwlock_t::rwlock_t()
 {
 #if HAVE_PTHREAD
 	int error=pthread_rwlock_init(&l, NULL);
@@ -72,7 +72,7 @@ rwlock_t::rwlock_t()
 #endif
 }
 
-void rwlock_t::readLock() 
+void rwlock_t::readLock()
 {
 #if HAVE_PTHREAD
 	if(pthread_rwlock_rdlock(&l))
@@ -82,7 +82,7 @@ void rwlock_t::readLock()
 #endif
 }
 
-void rwlock_t::writeLock() 
+void rwlock_t::writeLock()
 {
 #if HAVE_PTHREAD
 	if(pthread_rwlock_wrlock(&l))
@@ -92,7 +92,7 @@ void rwlock_t::writeLock()
 #endif
 }
 
-void rwlock_t::unlock() 
+void rwlock_t::unlock()
 {
 #if HAVE_PTHREAD
 	if(pthread_rwlock_unlock(&l))
@@ -102,7 +102,7 @@ void rwlock_t::unlock()
 #endif
 }
 
-rwlock_t::~rwlock_t() 
+rwlock_t::~rwlock_t()
 {
 #if HAVE_PTHREAD
 	pthread_rwlock_destroy(&l);
@@ -112,7 +112,7 @@ rwlock_t::~rwlock_t()
 
 /* condition object */
 
-conditionVar_t::conditionVar_t() 
+conditionVar_t::conditionVar_t()
 {
 #if HAVE_PTHREAD
 	int error=pthread_mutex_init(&m, NULL);
@@ -134,7 +134,7 @@ conditionVar_t::conditionVar_t()
 #endif
 }
 
-void conditionVar_t::lock() 
+void conditionVar_t::lock()
 {
 #if HAVE_PTHREAD
 	if(pthread_mutex_lock(&m))
@@ -146,7 +146,7 @@ void conditionVar_t::lock()
 #endif
 }
 
-void conditionVar_t::unlock() 
+void conditionVar_t::unlock()
 {
 #if HAVE_PTHREAD
 	if(pthread_mutex_unlock(&m))
@@ -164,7 +164,7 @@ void conditionVar_t::signal()
 	if(pthread_cond_signal(&c))
 	{
 		throw std::runtime_error("Error condition signal");
-	}	
+	}
 #elif defined( WIN32_THREADS )
 	SetEvent(condHandle);
 #endif
@@ -183,7 +183,7 @@ void conditionVar_t::wait()
 #endif
 }
 
-conditionVar_t::~conditionVar_t() 
+conditionVar_t::~conditionVar_t()
 {
 #if HAVE_PTHREAD
 	pthread_mutex_destroy(&m);

@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * 			vector3d.cc: Vector 3d and point manipulation implementation 
+ * 			vector3d.cc: Vector 3d and point manipulation implementation
  *      This is part of the yafray package
  *      Copyright (C) 2002 Alejandro Conty Estevez
  *
@@ -100,10 +100,10 @@ bool refract(const vector3d_t &n,const vector3d_t &wi, vector3d_t &wo, float IOR
 	}
 	float k = 1 - eta*eta*(1 - cos_v_n*cos_v_n);
 	if(k<= 0.f) return false;
-	
+
 	wo = eta*I + (eta*cos_v_n - fSqrt(k))*N;
 	wo.normalize();
-	
+
 	return true;
 }
 

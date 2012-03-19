@@ -83,28 +83,28 @@ pointKdTree<T>::pointKdTree(const std::vector<T> &dat)
 	Y_LOOKUPS=0; Y_PROCS=0;
 	nextFreeNode = 0;
 	nElements = dat.size();
-	
+
 	if(nElements == 0)
 	{
 		Y_ERROR << "pointKdTree: Empty vector!" << yendl;
 		return;
 	}
-	
+
 	nodes = (kdNode<T> *)y_memalign(64, 4*nElements*sizeof(kdNode<T>)); //actually we could allocate one less...2n-1
 	const T **elements = new const T*[nElements];
-	
+
 	for(u_int32 i=0; i<nElements; ++i) elements[i] = &dat[i];
-	
+
 	treeBound.set(dat[0].pos, dat[0].pos);
-	
+
 	for(u_int32 i=1; i<nElements; ++i) treeBound.include(dat[i].pos);
-	
+
 	Y_INFO << "pointKdTree: Starting recusive tree build for "<<nElements<<" elements..." << yendl;
-	
+
 	buildTree(0, nElements, treeBound, elements);
-	
+
 	Y_INFO << "pointKdTree: Tree built." << yendl;
-	
+
 	delete[] elements;
 }
 
@@ -170,24 +170,24 @@ void pointKdTree<T>::buildTree2(u_int32 start, u_int32 end, bound_t &nodeBound, 
 }
 
 
-template<class T> template<class LookupProc> 
+template<class T> template<class LookupProc>
 void pointKdTree<T>::lookup(const point3d_t &p, const LookupProc &proc, PFLOAT &maxDistSquared) const
 {
 #if NON_REC_LOOKUP > 0
 	++Y_LOOKUPS;
 	KdStack stack[KD_MAX_STACK];
 	const kdNode<T> *farChild, *currNode = nodes;
-	
+
 	int stackPtr = 1;
 	stack[stackPtr].node = 0; // "nowhere", termination flag
-	
+
 	while (true)
 	{
 		while( !currNode->IsLeaf() )
 		{
 			int axis = currNode->SplitAxis();
 			PFLOAT splitVal = currNode->SplitPos();
-			
+
 			if( p[axis] <= splitVal ) //need traverse left first
 			{
 				farChild = &nodes[currNode->getRightChild()];
@@ -213,7 +213,7 @@ void pointKdTree<T>::lookup(const point3d_t &p, const LookupProc &proc, PFLOAT &
 			++Y_PROCS;
 			proc(currNode->data, dist2, maxDistSquared);
 		}
-		
+
 		if(!stack[stackPtr].node) return; // stack empty, done.
 		//radius probably lowered so we may pop additional elements:
 		int axis = stack[stackPtr].axis;
@@ -241,7 +241,7 @@ void pointKdTree<T>::lookup(const point3d_t &p, const LookupProc &proc, PFLOAT &
 #endif
 }
 
-template<class T> template<class LookupProc> 
+template<class T> template<class LookupProc>
 void pointKdTree<T>::recursiveLookup(const point3d_t &p, const LookupProc &proc, PFLOAT &maxDistSquared, int nodeNum) const
 {
 	const kdNode<T> *currNode = &nodes[nodeNum];

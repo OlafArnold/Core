@@ -14,14 +14,14 @@ class gBoundTreeNode_t
 {
 	//friend class gBoundTree_t;
 	public:
-		gBoundTreeNode_t(gBoundTreeNode_t<T> *l,gBoundTreeNode_t<T> *r,bound_t &b) 
-			{_left=l;_right=r;bound=b;r->_parent=l->_parent=this;_parent=NULL;};
-		
-		gBoundTreeNode_t(const std::vector<T> & v,const bound_t b):_child(v) 
-		{_left=_right=NULL;_parent=NULL;bound=b;};
-		
-		~gBoundTreeNode_t() {if(_left!=NULL) {delete _left;delete _right;} };
-		
+		gBoundTreeNode_t(gBoundTreeNode_t<T> *l, gBoundTreeNode_t<T> *r, bound_t &b)
+			{_left=l; _right=r; bound=b; r->_parent=l->_parent=this; _parent=NULL;};
+
+		gBoundTreeNode_t(const std::vector<T> & v, const bound_t b):_child(v)
+		{_left=_right=NULL; _parent=NULL; bound=b;};
+
+		~gBoundTreeNode_t() {if(_left!=NULL) {delete _left; delete _right;} };
+
 		bool isLeaf()const  {return (_left==NULL);};
 		gBoundTreeNode_t<T> *right() {return _right;};
 		const gBoundTreeNode_t<T> *right()const {return _right;};
@@ -54,23 +54,25 @@ gBoundTreeNode_t<T> * buildGenericTree(const std::vector<T> &v,
 {
 	typedef typename std::vector<T>::const_iterator vector_const_iterator;
 	if((v.size()<=dratio) || (skipX && skipY && skipZ))
-		return new gBoundTreeNode_t<T>(v,calc_bound(v));
-	PFLOAT lx,ly,lz;
-	bool usedX=false,usedY=false,usedZ=false;
+		return new gBoundTreeNode_t<T>(v, calc_bound(v));
+	PFLOAT lx, ly, lz;
+	bool usedX=false, usedY=false, usedZ=false;
 	bound_t bound=calc_bound(v);
 	lx=bound.longX();
 	ly=bound.longY();
 	lz=bound.longZ();
 
-	bound_t bl,br;
+	bound_t bl, br;
 	if(((lx>=ly) || skipY) && ((lx>=lz) || skipZ) && !skipX)
 	{
 		PFLOAT media=0;
 		for(vector_const_iterator i=v.begin();i!=v.end();++i)
 			media+=get_pos(*i).x;
 		media/=(PFLOAT)v.size();
-		bl=bound;bl.setMaxX(media);
-		br=bound;br.setMinX(media);
+		bl=bound;
+		bl.setMaxX(media);
+		br=bound;
+		br.setMinX(media);
 		usedX=true;
 	}
 	else if(((ly>=lx) || skipX) && ((ly>=lz) || skipZ) && !skipY)
@@ -79,8 +81,10 @@ gBoundTreeNode_t<T> * buildGenericTree(const std::vector<T> &v,
 		for(vector_const_iterator i=v.begin();i!=v.end();++i)
 			media+=get_pos(*i).y;
 		media/=(PFLOAT)v.size();
-		bl=bound;bl.setMaxY(media);
-		br=bound;br.setMinY(media);
+		bl=bound;
+		bl.setMaxY(media);
+		br=bound;
+		br.setMinY(media);
 		usedY=true;
 	}
 	else
@@ -89,16 +93,18 @@ gBoundTreeNode_t<T> * buildGenericTree(const std::vector<T> &v,
 		for(vector_const_iterator i=v.begin();i!=v.end();++i)
 			media+=get_pos(*i).z;
 		media/=(PFLOAT)v.size();
-		bl=bound;bl.setMaxZ(media);
-		br=bound;br.setMinZ(media);
+		bl=bound;
+		bl.setMaxZ(media);
+		br=bound;
+		br.setMinZ(media);
 		usedZ=true;
 	}
-	std::vector<T> vl,vr,vm;
+	std::vector<T> vl, vr, vm;
 	for(vector_const_iterator i=v.begin();i!=v.end();++i)
 	{
-		if(is_in_bound(*i,bl))
+		if(is_in_bound(*i, bl))
 		{
-			if(is_in_bound(*i,br)) 
+			if(is_in_bound(*i, br))
 				vm.push_back(*i);
 			else
 				vl.push_back(*i);
@@ -108,43 +114,42 @@ gBoundTreeNode_t<T> * buildGenericTree(const std::vector<T> &v,
 	}
 
 	if( (vl.size()==v.size()) || (vr.size()==v.size()) || (vm.size()==v.size()))
-		return buildGenericTree(v,calc_bound,is_in_bound,get_pos,dratio,depth,
-						skipX || usedX,skipY || usedY,skipZ || usedZ);
-	if(vl.size()==0) return new gBoundTreeNode_t<T>(buildGenericTree(vr,calc_bound,is_in_bound,
-				get_pos,dratio,depth+1,skipX,skipY,skipZ),buildGenericTree(vm,calc_bound,
-					is_in_bound,get_pos,dratio,depth+1, skipX,skipY,skipZ),bound);
-	if(vr.size()==0) return new gBoundTreeNode_t<T>(buildGenericTree(vl,calc_bound,is_in_bound,
-				get_pos,dratio,depth+1,skipX,skipY,skipZ),buildGenericTree(vm,calc_bound,
-					is_in_bound,get_pos,dratio,depth+1, skipX,skipY,skipZ),bound);
-	if(vm.size()==0) return new gBoundTreeNode_t<T>(buildGenericTree(vl,calc_bound,is_in_bound,
-				get_pos,dratio,depth+1,skipX,skipY,skipZ),buildGenericTree(vr,calc_bound,
-					is_in_bound,get_pos,dratio,depth+1, skipX,skipY,skipZ),bound);
-	//else 
-	//{
-		gBoundTreeNode_t<T> *balanced=new gBoundTreeNode_t<T>( 
-			buildGenericTree(vl,calc_bound,is_in_bound,get_pos,dratio,depth+1,
-				skipX,skipY,skipZ),
-			buildGenericTree(vr,calc_bound,is_in_bound,get_pos,dratio,depth+1,
-				skipX,skipY,skipZ),bound);
-		if(vm.size()==0) return balanced;
-		return new gBoundTreeNode_t<T>(
-			balanced,
-			buildGenericTree(vm,calc_bound,is_in_bound,get_pos,dratio,depth+1,
-				skipX,skipY,skipZ),bound);
-	//}
+		return buildGenericTree(v, calc_bound, is_in_bound, get_pos, dratio,depth,
+						skipX || usedX, skipY || usedY, skipZ || usedZ);
+	if(vl.size()==0) return new gBoundTreeNode_t<T>(buildGenericTree(vr, calc_bound, is_in_bound,
+				get_pos, dratio, depth+1, skipX, skipY, skipZ), buildGenericTree(vm, calc_bound,
+					is_in_bound, get_pos, dratio, depth+1, skipX, skipY, skipZ), bound);
+	if(vr.size()==0) return new gBoundTreeNode_t<T>(buildGenericTree(vl, calc_bound, is_in_bound,
+				get_pos, dratio, depth+1, skipX, skipY, skipZ), buildGenericTree(vm, calc_bound,
+					is_in_bound, get_pos, dratio, depth+1, skipX, skipY, skipZ), bound);
+	if(vm.size()==0) return new gBoundTreeNode_t<T>(buildGenericTree(vl, calc_bound, is_in_bound,
+				get_pos, dratio, depth+1, skipX, skipY, skipZ), buildGenericTree(vr, calc_bound,
+					is_in_bound, get_pos, dratio, depth+1, skipX, skipY, skipZ), bound);
+
+	gBoundTreeNode_t<T> *balanced=new gBoundTreeNode_t<T>(
+		buildGenericTree(vl, calc_bound, is_in_bound, get_pos, dratio, depth+1,
+			skipX, skipY, skipZ),
+		buildGenericTree(vr, calc_bound, is_in_bound, get_pos, dratio, depth+1,
+			skipX, skipY, skipZ), bound);
+	if(vm.size()==0) return balanced;
+	return new gBoundTreeNode_t<T>(
+		balanced,
+		buildGenericTree(vm, calc_bound, is_in_bound, get_pos, dratio, depth+1,
+			skipX, skipY, skipZ), bound);
+
 }
 
-template<class T,class D,class CROSS>
-class gObjectIterator_t 
+template<class T, class D, class CROSS>
+class gObjectIterator_t
 {
 	public:
-		gObjectIterator_t(const gBoundTreeNode_t<T> *r,const D &d);
+		gObjectIterator_t(const gBoundTreeNode_t<T> *r, const D &d);
 		void upFirstRight();
 		void downLeft();
 		void operator ++ ();
 		void operator ++ (int) {++(*this);};
 		bool operator ! () {return !end;};
-		//T & operator * () {return *currT;};
+
 		const T & operator * () {return *currT;};
 		const gBoundTreeNode_t<T> *currentNode() {return currN;};
 	protected:
@@ -165,12 +170,12 @@ class gObjectIterator_t
 #define WAS_RIGHT(o,c) (c->right()==o)
 #define TOP(c) (c->parent()==NULL)
 
-template<class T,class D,class CROSS>
-gObjectIterator_t<T,D,CROSS>::gObjectIterator_t(const gBoundTreeNode_t<T> *r,const D &d):
+template<class T, class D, class CROSS>
+gObjectIterator_t<T, D, CROSS>::gObjectIterator_t(const gBoundTreeNode_t<T> *r, const D &d):
 	dir(d)
 {
 	root=currN=r;
-	if(!cross(dir,currN->getBound()))
+	if(!cross(dir, currN->getBound()))
 	{
 		end=true;
 		return;
@@ -225,11 +230,11 @@ gObjectIterator_t<T,D,CROSS>::gObjectIterator_t(const gBoundTreeNode_t<T> *r,con
 	}
 }
 
-template<class T,class D,class CROSS>
-void gObjectIterator_t<T,D,CROSS>::upFirstRight()
+template<class T, class D, class CROSS>
+void gObjectIterator_t<T, D, CROSS>::upFirstRight()
 {
 	const gBoundTreeNode_t<T> *old=currN;
-	if(TOP(currN)) 
+	if(TOP(currN))
 	{
 		currN=NULL;
 		return;
@@ -255,7 +260,7 @@ void gObjectIterator_t<T,D,CROSS>::downLeft()
 	{
 		while( !(currN->isLeaf()) && cross(dir,currN->left()->getBound()) )
 			DOWN_LEFT(currN);
-		if(!(currN->isLeaf())) 
+		if(!(currN->isLeaf()))
 		{
 			if(cross(dir,currN->right()->getBound()))
 				DOWN_RIGHT(currN);
@@ -287,7 +292,7 @@ inline void gObjectIterator_t<T,D,CROSS>::operator ++ ()
 		currT=currN->begin();
 		currTend=currN->end();
 	}
-	
+
 }
 
 
@@ -303,7 +308,7 @@ class gBoundTree_t
 									global_photon_get_pos,8);
 		}
 		~gBoundTree_t(){ if(tree!=NULL) delete tree; }
-		
+
 		lookup(const point3d_t &P,const vector3d_t &N, std::vector<foundPhoton_t> &found, unsigned int K,PFLOAT &radius,PFLOAT mincos)const;
 	private:
 		gBoundTreeNode_t<const storedPhoton_t *> *tree;
@@ -322,7 +327,7 @@ gBoundTree_t<T>::lookup(const point3d_t &P,const vector3d_t &N, std::vector<foun
 		//found.clear();
 		found.resize(0);
 		searchCircle_t circle(P,radius);
-		for(gObjectIterator_t<const storedPhoton_t *,searchCircle_t,circleCross_f> 
+		for(gObjectIterator_t<const storedPhoton_t *,searchCircle_t,circleCross_f>
 				i(tree,circle);!i;++i)
 		{
 			vector3d_t sep=(*i)->position()-P;

@@ -115,18 +115,18 @@ kdTree_t<T>::kdTree_t(const T **v, int np, int depth, int leafSize,
 	for (int i = 0; i < 3; ++i) edges[i] = new boundEdge[514/*2*totalPrims*/];
 	clip = new int[maxDepth+2];
 	cdata = (char*)y_memalign(64, (maxDepth+2)*TRI_CLIP_THRESH*CLIP_DATA_SIZE);
-	
+
 	// prepare data
 	for (u_int32 i = 0; i < totalPrims; i++) leftPrims[i] = i;//primNums[i] = i;
 	for (int i = 0; i < maxDepth+2; i++) clip[i] = -1;
-	
+
 	/* build tree */
 	prims = v;
 	std::cout << "starting recursive build...\n";
 	buildTree(totalPrims, treeBound, leftPrims,
 			  leftPrims, rightPrims, edges, // <= working memory
 			  rMemSize, 0, 0 );
-	
+
 	// free working memory
 	delete[] leftPrims;
 	delete[] rightPrims;
@@ -178,7 +178,7 @@ void kdTree_t<T>::pigeonMinCost(u_int32 nPrims, bound_t &nodeBound, u_int32 *pri
 	float invTotalSA = 1.0f / (d[0]*d[1] + d[0]*d[2] + d[1]*d[2]);
 	PFLOAT t_low, t_up;
 	int b_left, b_right;
-	
+
 	for(int axis=0;axis<3;axis++)
 	{
 		PFLOAT s = KD_BINS/d[axis];
@@ -195,7 +195,7 @@ void kdTree_t<T>::pigeonMinCost(u_int32 nPrims, bound_t &nodeBound, u_int32 *pri
 //			b_right = Y_Round2Int( ((t_up - min)*s) );
 			if(b_left<0) b_left=0; else if(b_left > KD_BINS) b_left = KD_BINS;
 			if(b_right<0) b_right=0; else if(b_right > KD_BINS) b_right = KD_BINS;
-			
+
 			if(t_low == t_up)
 			{
 				if(bin[b_left].empty() || (t_low >= bin[b_left].t && !bin[b_left].empty() ) )
@@ -211,7 +211,7 @@ void kdTree_t<T>::pigeonMinCost(u_int32 nPrims, bound_t &nodeBound, u_int32 *pri
 				bin[b_left].n += 2;
 			}
 			else
-			{	
+			{
 				if(bin[b_left].empty() || (t_low > bin[b_left].t  && !bin[b_left].empty() ) )
 				{
 					bin[b_left].t = t_low;
@@ -226,7 +226,7 @@ void kdTree_t<T>::pigeonMinCost(u_int32 nPrims, bound_t &nodeBound, u_int32 *pri
 				}
 				else bin[b_left].c_left++;
 				bin[b_left].n++;
-				
+
 				bin[b_right].c_right++;
 				if(bin[b_right].empty() || t_up > bin[b_right].t)
 				{
@@ -239,17 +239,17 @@ void kdTree_t<T>::pigeonMinCost(u_int32 nPrims, bound_t &nodeBound, u_int32 *pri
 			}
 
 		}
-		
+
 		const int axisLUT[3][3] = { {0,1,2}, {1,2,0}, {2,0,1} };
 		float capArea = d[ axisLUT[1][axis] ] * d[ axisLUT[2][axis] ];
 		float capPerim = d[ axisLUT[1][axis] ] + d[ axisLUT[2][axis] ];
-		
+
 		unsigned int nBelow=0, nAbove=nPrims;
 		// cumulate prims and evaluate cost
 		for(int i=0; i<KD_BINS+1; ++i)
 		{
 			if(!bin[i].empty())
-			{	
+			{
 				nBelow += bin[i].c_left;
 				nAbove -= bin[i].c_right;
 				// cost:
@@ -322,7 +322,7 @@ void kdTree_t<T>::minimalCost(u_int32 nPrims, bound_t &nodeBound, u_int32 *primI
 	split.bestCost = std::numeric_limits<PFLOAT>::infinity();
 	float invTotalSA = 1.0f / (d[0]*d[1] + d[0]*d[2] + d[1]*d[2]);
 	int nEdge;
-	
+
 	for(int axis=0;axis<3;axis++)
 	{
 		// << get edges for axis >>
@@ -404,7 +404,7 @@ void kdTree_t<T>::minimalCost(u_int32 nPrims, bound_t &nodeBound, u_int32 *primI
 				continue;
 			}
 		}
-		
+
 		for (int i = 0; i < nEdge; ++i) {
 			if (edges[axis][i].end == UPPER_B) --nAbove;
 			PFLOAT edget = edges[axis][i].pos;
@@ -465,7 +465,7 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 		y_free(nodes);
 		nodes = n;
 		allocatedNodesCount = newCount;
-	}	
+	}
 
 #if _TRI_CLIP > 0
 	if(nPrims <= TRI_CLIP_THRESH)
@@ -523,7 +523,7 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 		if( depth >= maxDepth ) depthLimitReached++; //stat
 		return 0;
 	}
-	
+
 	//<< calculate cost for all axes and chose minimum >>
 	splitCost_t split;
 	float baseBonus=eBonus;
@@ -545,7 +545,7 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 		if( badRefines == 2) ++NumBadSplits; //stat
 		return 0;
 	}
-	
+
 	//todo: check working memory for child recursive calls
 	u_int32 remainingMem, *morePrims = 0, *nRightPrims;
 	u_int32 *oldRightPrims = rightPrims;
@@ -561,7 +561,7 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 		nRightPrims = oldRightPrims;
 		remainingMem = rightMemSize;
 	}
-	
+
 	// Classify primitives with respect to split
 	PFLOAT splitPos;
 	int n0 = 0, n1 = 0;
@@ -594,7 +594,7 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 		u_int32 oldPrims[TRI_CLIP_THRESH];
 //		std::cout << "memcpy\n";
 		memcpy(oldPrims, primNums, nPrims*sizeof(int));
-		
+
 		for (int i=0; i<split.bestOffset; ++i)
 			if (edges[split.bestAxis][i].end != UPPER_B)
 			{
@@ -626,7 +626,7 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 //		std::cout << "\ndone\n";
 	}
 	else //we did "normal" cost function
-	{	
+	{
 		for (int i=0; i<split.bestOffset; ++i)
 			if (edges[split.bestAxis][i].end != UPPER_B)
 				leftPrims[n0++] = edges[split.bestAxis][i].primNum;
@@ -640,8 +640,8 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 //	std::cout << "split axis: " << split.bestAxis << ", pos: " << splitPos << "\n";
 	//advance right prims pointer
 	remainingMem -= n1;
-	
-	
+
+
 	u_int32 curNode = nextFreeNode;
 	nodes[curNode].createInterior(split.bestAxis, splitPos);
 	++nextFreeNode;
@@ -680,7 +680,7 @@ int kdTree_t<T>::buildTree(u_int32 nPrims, bound_t &nodeBound, u_int32 *primNums
 	if(morePrims) delete[] morePrims;
 	return 1;
 }
-	
+
 
 
 //============================
@@ -691,37 +691,37 @@ template<class T>
 bool kdTree_t<T>::Intersect(const ray_t &ray, PFLOAT dist, T **tr, PFLOAT &Z, intersectData_t &data) const
 {
 	Z=dist;
-	
+
 	PFLOAT a, b, t; // entry/exit/splitting plane signed distance
 	PFLOAT t_hit;
-	
+
 	if (!treeBound.cross(ray, a, b, dist))
 	{ return false; }
-	
+
 	intersectData_t currentData, tempData;
 	vector3d_t invDir(1.0/ray.dir.x, 1.0/ray.dir.y, 1.0/ray.dir.z); //was 1.f!
 //	int rayId = curMailboxId++;
 	bool hit = false;
-	
+
 	rKdStack<T> stack[KD_MAX_STACK];
 	const rkdTreeNode<T> *farChild, *currNode;
 	currNode = nodes;
-	
+
 	int enPt = 0;
 	stack[enPt].t = a;
-	
+
 	//distinguish between internal and external origin
 	if(a >= 0.0) // ray with external origin
 		stack[enPt].pb = ray.from + ray.dir * a;
 	else // ray with internal origin
 		stack[enPt].pb = ray.from;
-	
+
 	// setup initial entry and exit poimt in stack
 	int exPt = 1; // pointer to stack
 	stack[exPt].t = b;
 	stack[exPt].pb = ray.from + ray.dir * b;
 	stack[exPt].node = 0; // "nowhere", termination flag
-	
+
 	//loop, traverse kd-Tree until object intersection or ray leaves tree bound
 	while (currNode != NULL)
 	{
@@ -731,7 +731,7 @@ bool kdTree_t<T>::Intersect(const ray_t &ray, PFLOAT dist, T **tr, PFLOAT &Z, in
 		{
 			int axis = currNode->SplitAxis();
 			PFLOAT splitVal = currNode->SplitPos();
-			
+
 			if(stack[enPt].pb[axis] <= splitVal){
 				if(stack[exPt].pb[axis] <= splitVal)
 				{
@@ -758,13 +758,13 @@ bool kdTree_t<T>::Intersect(const ray_t &ray, PFLOAT dist, T **tr, PFLOAT &Z, in
 				currNode = &nodes[currNode->getRightChild()];
 			}
 			// traverse both children
-			
+
 			t = (splitVal - ray.from[axis]) * invDir[axis];
-			
+
 			// setup the new exit point
 			int tmp = exPt;
 			exPt++;
-			
+
 			// possibly skip current entry point so not to overwrite the data
 			if (exPt == enPt) exPt++;
 			// push values onto the stack //todo: lookup table
@@ -778,7 +778,7 @@ bool kdTree_t<T>::Intersect(const ray_t &ray, PFLOAT dist, T **tr, PFLOAT &Z, in
 			stack[exPt].pb[nextAxis] = ray.from[nextAxis] + t * ray.dir[nextAxis];
 			stack[exPt].pb[prevAxis] = ray.from[prevAxis] + t * ray.dir[prevAxis];
 		}
-				 
+
 		u_int32 nPrimitives = currNode->nPrimitives();
 		if (nPrimitives == 1)
 		{
@@ -811,21 +811,21 @@ bool kdTree_t<T>::Intersect(const ray_t &ray, PFLOAT dist, T **tr, PFLOAT &Z, in
 				}
 			}
 		}
-		
+
 		if(hit && Z <= stack[exPt].t)
 		{
 			data = currentData;
 			return true;
 		}
-		
+
 		enPt = exPt;
 		currNode = stack[exPt].node;
 		exPt = stack[enPt].prev;
-				
+
 	} // while
 
 	data = currentData;
-	
+
 	return hit;
 }
 
@@ -834,32 +834,32 @@ bool kdTree_t<T>::IntersectS(const ray_t &ray, PFLOAT dist, T **tr) const
 {
 	PFLOAT a, b, t; // entry/exit/splitting plane signed distance
 	PFLOAT t_hit;
-	
+
 	if (!treeBound.cross(ray, a, b, dist))
 		return false;
-	
+
 	intersectData_t bary;
 	vector3d_t invDir(1.f/ray.dir.x, 1.f/ray.dir.y, 1.f/ray.dir.z);
-	
+
 	rKdStack<T> stack[KD_MAX_STACK];
 	const rkdTreeNode<T> *farChild, *currNode;
 	currNode = nodes;
-	
+
 	int enPt = 0;
 	stack[enPt].t = a;
-	
+
 	//distinguish between internal and external origin
 	if(a >= 0.0) // ray with external origin
 		stack[enPt].pb = ray.from + ray.dir * a;
 	else // ray with internal origin
 		stack[enPt].pb = ray.from;
-	
+
 	// setup initial entry and exit poimt in stack
 	int exPt = 1; // pointer to stack
 	stack[exPt].t = b;
 	stack[exPt].pb = ray.from + ray.dir * b;
 	stack[exPt].node = 0; // "nowhere", termination flag
-	
+
 	//loop, traverse kd-Tree until object intersection or ray leaves tree bound
 	while (currNode != NULL)
 	{
@@ -869,7 +869,7 @@ bool kdTree_t<T>::IntersectS(const ray_t &ray, PFLOAT dist, T **tr) const
 		{
 			int axis = currNode->SplitAxis();
 			PFLOAT splitVal = currNode->SplitPos();
-			
+
 			if(stack[enPt].pb[axis] <= splitVal){
 				if(stack[exPt].pb[axis] <= splitVal)
 				{
@@ -896,13 +896,13 @@ bool kdTree_t<T>::IntersectS(const ray_t &ray, PFLOAT dist, T **tr) const
 				currNode = &nodes[currNode->getRightChild()];
 			}
 			// traverse both children
-			
+
 			t = (splitVal - ray.from[axis]) * invDir[axis];
-			
+
 			// setup the new exit point
 			int tmp = exPt;
 			exPt++;
-			
+
 			// possibly skip current entry point so not to overwrite the data
 			if (exPt == enPt) exPt++;
 			// push values onto the stack //todo: lookup table
@@ -916,7 +916,7 @@ bool kdTree_t<T>::IntersectS(const ray_t &ray, PFLOAT dist, T **tr) const
 			stack[exPt].pb[nextAxis] = ray.from[nextAxis] + t * ray.dir[nextAxis];
 			stack[exPt].pb[prevAxis] = ray.from[prevAxis] + t * ray.dir[prevAxis];
 		}
-				 
+
 		// Check for intersections inside leaf node
 		u_int32 nPrimitives = currNode->nPrimitives();
 		if (nPrimitives == 1)
@@ -947,11 +947,11 @@ bool kdTree_t<T>::IntersectS(const ray_t &ray, PFLOAT dist, T **tr) const
 					}
 			}
 		}
-		
+
 		enPt = exPt;
 		currNode = stack[exPt].node;
 		exPt = stack[enPt].prev;
-				
+
 	} // while
 
 	return false;
@@ -966,10 +966,10 @@ bool kdTree_t<T>::IntersectTS(renderState_t &state, const ray_t &ray, int maxDep
 {
 	PFLOAT a, b, t; // entry/exit/splitting plane signed distance
 	PFLOAT t_hit;
-	
+
 	if (!treeBound.cross(ray, a, b, dist))
 		return false;
-	
+
 	intersectData_t bary;
 	vector3d_t invDir(1.f/ray.dir.x, 1.f/ray.dir.y, 1.f/ray.dir.z);
 
@@ -982,22 +982,22 @@ bool kdTree_t<T>::IntersectTS(renderState_t &state, const ray_t &ray, int maxDep
 	rKdStack<T> stack[KD_MAX_STACK];
 	const rkdTreeNode<T> *farChild, *currNode;
 	currNode = nodes;
-	
+
 	int enPt = 0;
 	stack[enPt].t = a;
-	
+
 	//distinguish between internal and external origin
 	if(a >= 0.0) // ray with external origin
 		stack[enPt].pb = ray.from + ray.dir * a;
 	else // ray with internal origin
 		stack[enPt].pb = ray.from;
-	
+
 	// setup initial entry and exit poimt in stack
 	int exPt = 1; // pointer to stack
 	stack[exPt].t = b;
 	stack[exPt].pb = ray.from + ray.dir * b;
 	stack[exPt].node = 0; // "nowhere", termination flag
-	
+
 	//loop, traverse kd-Tree until object intersection or ray leaves tree bound
 	while (currNode != NULL)
 	{
@@ -1007,7 +1007,7 @@ bool kdTree_t<T>::IntersectTS(renderState_t &state, const ray_t &ray, int maxDep
 		{
 			int axis = currNode->SplitAxis();
 			PFLOAT splitVal = currNode->SplitPos();
-			
+
 			if(stack[enPt].pb[axis] <= splitVal){
 				if(stack[exPt].pb[axis] <= splitVal)
 				{
@@ -1034,13 +1034,13 @@ bool kdTree_t<T>::IntersectTS(renderState_t &state, const ray_t &ray, int maxDep
 				currNode = &nodes[currNode->getRightChild()];
 			}
 			// traverse both children
-			
+
 			t = (splitVal - ray.from[axis]) * invDir[axis];
-			
+
 			// setup the new exit point
 			int tmp = exPt;
 			exPt++;
-			
+
 			// possibly skip current entry point so not to overwrite the data
 			if (exPt == enPt) exPt++;
 			// push values onto the stack //todo: lookup table
@@ -1054,7 +1054,7 @@ bool kdTree_t<T>::IntersectTS(renderState_t &state, const ray_t &ray, int maxDep
 			stack[exPt].pb[nextAxis] = ray.from[nextAxis] + t * ray.dir[nextAxis];
 			stack[exPt].pb[prevAxis] = ray.from[prevAxis] + t * ray.dir[prevAxis];
 		}
-				 
+
 		// Check for intersections inside leaf node
 		u_int32 nPrimitives = currNode->nPrimitives();
 		if (nPrimitives == 1)
@@ -1078,7 +1078,7 @@ bool kdTree_t<T>::IntersectTS(renderState_t &state, const ray_t &ray, int maxDep
 				}
 			}
 		}
-		else 
+		else
 		{
 			T **prims = currNode->primitives;
 			for (u_int32 i = 0; i < nPrimitives; ++i) {
@@ -1102,11 +1102,11 @@ bool kdTree_t<T>::IntersectTS(renderState_t &state, const ray_t &ray, int maxDep
 				}
 			}
 		}
-		
+
 		enPt = exPt;
 		currNode = stack[exPt].node;
 		exPt = stack[enPt].prev;
-				
+
 	} // while
 
 	return false;

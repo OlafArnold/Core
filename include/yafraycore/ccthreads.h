@@ -82,7 +82,7 @@ class YAFRAYCORE_EXPORT conditionVar_t
 		HANDLE winMutex;
 #endif
 };
-                                                                                                                
+
 class YAFRAYCORE_EXPORT thread_t
 {
 #if HAVE_PTHREAD
