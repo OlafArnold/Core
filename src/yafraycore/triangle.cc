@@ -584,7 +584,7 @@ bool bsTriangle_t::intersect(const ray_t &ray, float *t, intersectData_t &data) 
 	*t = edge2 * qvec * inv_det;
 
 	data.b1 = u;
-	data.b1 = v;
+	data.b2 = v;
 	data.t = ray.time;
 	return true;
 }
