@@ -147,7 +147,7 @@ static inline void accumulate(const float *component, float *accum, float Kr)
 void shinyDiffuseMat_t::initBSDF(const renderState_t &state, const surfacePoint_t &sp, BSDF_t &bsdfTypes)const
 {
 	SDDat_t *dat = (SDDat_t *)state.userdata;
-	memset(dat, 0, 8*sizeof(float));
+	memset(dat, 0, 6 * sizeof(float));
 	dat->nodeStack = (char*)state.userdata + sizeof(SDDat_t);
 	//create our "stack" to save node results
 	nodeStack_t stack(dat->nodeStack);
@@ -192,12 +192,12 @@ CFLOAT shinyDiffuseMat_t::OrenNayar(const vector3d_t &wi, const vector3d_t &wo, 
 	if(cos_to >= cos_ti)
 	{
 		sin_alpha = fSqrt(1.f - cos_ti*cos_ti);
-		tan_beta = fSqrt(1.f - cos_to*cos_to) / (cos_to == 0.f)?1e-8f:cos_to; // white (black on windows) dots fix for oren-nayar, could happen with bad normals
+		tan_beta = fSqrt(1.f - cos_to*cos_to) / ((cos_to == 0.f)?1e-8f:cos_to); // white (black on windows) dots fix for oren-nayar, could happen with bad normals
 	}
 	else
 	{
 		sin_alpha = fSqrt(1.f - cos_to*cos_to);
-		tan_beta = fSqrt(1.f - cos_ti*cos_ti) / (cos_ti == 0.f)?1e-8f:cos_ti; // white (black on windows) dots fix for oren-nayar, could happen with bad normals
+		tan_beta = fSqrt(1.f - cos_ti*cos_ti) / ((cos_ti == 0.f)?1e-8f:cos_ti); // white (black on windows) dots fix for oren-nayar, could happen with bad normals
 	}
 	
 	return A + B * maxcos_f * sin_alpha * tan_beta;
