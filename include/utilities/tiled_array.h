@@ -51,10 +51,14 @@ public:
 	}
 	
 	~tiledArray2D_t() {
-		for (int i = 0; i < nx * ny; ++i)
-			data[i].~T();
-		if(data) y_free(data);
+		if(data)
+		{
+			for (int i = 0; i < nx * ny; ++i)
+				data[i].~T();
+			y_free(data);
+		}
 	}
+
 	T &operator()(int x, int y) {
 		int bx = block(x), by = block(y);
 		int ox = offset(x), oy = offset(y);
